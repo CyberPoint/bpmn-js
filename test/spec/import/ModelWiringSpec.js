@@ -144,17 +144,29 @@ describe('import - model wiring', function() {
     beforeEach(bootstrapViewer(xml));
 
 
-    it('should wire parent child relationship', inject(function(elementRegistry) {
+    it('should import flowElements as children of Participant', inject(function(elementRegistry) {
 
       // when
-      var laneShape = elementRegistry.get('Lane'),
-          participantShape = elementRegistry.get('Participant_Lane'),
+      var participantShape = elementRegistry.get('Participant_Lane'),
           taskShape = elementRegistry.get('Task'),
           sequenceFlowElement = elementRegistry.get('SequenceFlow');
 
       // then
-      expect(taskShape.parent).to.eql(laneShape);
+      expect(taskShape.parent).to.eql(participantShape);
       expect(sequenceFlowElement.parent).to.eql(participantShape);
+    }));
+
+
+    it('should wire FlowElement#lanes', inject(function(elementRegistry) {
+
+      // when
+      var taskShape = elementRegistry.get('Task'),
+          task = taskShape.businessObject,
+          laneShape = elementRegistry.get('Lane'),
+          lane = laneShape.businessObject;
+
+      // then
+      expect(task.get('lanes')).to.eql([ lane ]);
     }));
 
   });
@@ -167,7 +179,7 @@ describe('import - model wiring', function() {
     beforeEach(bootstrapViewer(xml));
 
 
-    it('should wire parent child relationship', inject(function(elementRegistry) {
+    it('should import flowElements as children of Participant', inject(function(elementRegistry) {
 
       // when
       var participantShape = elementRegistry.get('Participant_Lane'),
